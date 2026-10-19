@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Local-only DSA MS current-student survey prototypes.">
-  <title>DSA MS Student Survey Prototypes</title>
+  <meta name="description" content="A featured Student Check-In and ten local-only DSA MS current-student survey prototypes.">
+  <title>Student Check-In and DSA MS Survey Prototypes</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -12,14 +12,14 @@
   <header class="site-header">
     <div class="site-header__inner">
       <a class="brand" href="index.html">DSA MS · Student Voice</a>
-      <span class="prototype-pill">Review prototypes</span>
+      <span class="prototype-pill">11 local-only prototypes</span>
     </div>
   </header>
   <main>
     <section class="hero">
-      <p class="eyebrow">Current-student survey collection</p>
-      <h1>Five moments. Two levels of detail.</h1>
-      <p class="hero__lede">Explore a short and expanded prototype for each survey moment. Use these side by side to review wording, flow, accessibility, and collection burden—not to collect live responses.</p>
+      <p class="eyebrow">DSA MS current-student surveys</p>
+      <h1>Start with the Student Check-In.</h1>
+      <p class="hero__lede">Review the featured eight-question recurring check-in first. Ten companion prototypes—short and expanded versions across five program moments—are available below for broader planning.</p>
       <div class="notice" role="note">
         <span class="notice__mark" aria-hidden="true">i</span>
         <div>
@@ -29,11 +29,27 @@
       </div>
     </section>
 
-    <section class="collection-grid" id="surveys" aria-label="Survey prototypes">
-      <article class="collection collection--featured">
-        <div class="collection__head"><span class="collection__number">Student check-in</span><h2>Handwritten Design Prototype</h2><p>The eight-question recurring check-in, faithfully presented for browser review with a job-seeking N/A option.</p></div>
-        <div class="version-links"><a class="version-link" href="student-check-in.html"><strong>Open Student Check-In</strong><span>Under 3 min · 8 questions · local only</span></a></div>
-      </article>
+    <section class="featured-survey" id="surveys" aria-labelledby="featured-title">
+      <div class="featured-survey__content">
+        <p class="featured-survey__kicker">Featured · Start here</p>
+        <h2 id="featured-title">Student Check-In</h2>
+        <p class="featured-survey__description">The handwritten eight-question recurring check-in, faithfully presented for browser review with the requested job-seeking N/A option.</p>
+        <ul class="featured-survey__facts" aria-label="Student Check-In details">
+          <li>Under 3 minutes</li>
+          <li>8 questions</li>
+          <li>Recurring pulse</li>
+        </ul>
+      </div>
+      <a class="featured-survey__action" href="student-check-in.html"><span>Open featured survey</span><strong>Student Check-In <span aria-hidden="true">→</span></strong></a>
+    </section>
+
+    <section class="collection-section" aria-labelledby="collection-title">
+      <div class="collection-heading">
+        <p class="eyebrow">10 companion prototypes</p>
+        <h2 id="collection-title">Five survey moments, two levels of detail.</h2>
+        <p>Compare short and expanded alternatives for targeted points in the student journey. These supplement the featured recurring check-in.</p>
+      </div>
+      <div class="collection-grid" aria-label="Companion survey prototypes">
       <article class="collection">
         <div class="collection__head"><span class="collection__number">Moment 01</span><h2>Beginning of the Program</h2><p>Starting preparation, goals, expectations, and support needs.</p></div>
         <div class="version-links"><a class="version-link" href="program-short.html"><strong>Short</strong><span>5–6 min · 9 questions</span></a><a class="version-link" href="program-long.html"><strong>Expanded</strong><span>13–16 min · 19 questions</span></a></div>
@@ -54,8 +70,9 @@
         <div class="collection__head"><span class="collection__number">Moment 05</span><h2>End-of-Semester Feedback</h2><p>Curriculum connections, preparation, career value, and resources.</p></div>
         <div class="version-links"><a class="version-link" href="end-short.html"><strong>Short</strong><span>14–23 min · 20 questions</span></a><a class="version-link" href="end-long.html"><strong>Expanded</strong><span>27–38 min · 31 questions</span></a></div>
       </article>
+      </div>
     </section>
   </main>
-  <footer class="footer">Presentation prototypes · Sources: handwritten Student Check-In design and DSA MS Current-Student Survey Collection · Use short and expanded versions as alternatives, not together.</footer>
+  <footer class="footer">11 local-only presentation prototypes · Start with the featured Student Check-In. Use each short and expanded companion pair as alternatives, not together.</footer>
 </body>
 </html>
