@@ -10,6 +10,7 @@
   const C = (id, label, options, hint = "", max = 0, exclusive = []) => ({ id, label, type: "check", options: O(options), hint, max, exclusive });
   const T = (id, label, hint = "", rows = 3) => ({ id, label, type: rows > 1 ? "textarea" : "text", hint, optional: true });
   const M = (id, label, rows, columns, hint = "") => ({ id, label, type: "matrix", rows: O(rows), columns: O(columns), hint });
+  const L = (id, label, options, hint = "") => ({ id, label, type: "scale", options: O(options), hint });
   const S = (title, note, questions, repeat = "") => ({ title, note, questions, repeat });
 
   const experience = "No experience|Introductory exposure|Can complete basic tasks independently|Can complete advanced tasks independently";
@@ -18,6 +19,24 @@
   const careerSupport = "Identifying roles or employers|Opportunity listings|Resume review|Portfolio review|Interview or assessment practice|Networking guidance|Discussing an offer|Fitting an internship with coursework|Unsure|Other|None";
 
   const surveys = {
+    "student-check-in": {
+      code: "Check-in", title: "Survey Questions", version: "Handwritten design", time: "under 3 minutes",
+      when: "Current-student check-in",
+      intro: "A browser-only presentation of the eight-question Student Check-In design.",
+      progressRequiredOnly: true,
+      sections: [
+        S("Student Check-In", "", [
+          L("ciq1", "How confident do you feel in your major or field right now?", "1|2|3|4|5", "1 — Least confident · 5 — Most Confident"),
+          L("ciq2", "How connected do you feel to your program or department?", "1|2|3|4|5", "1 — Least · 5 — Most"),
+          L("ciq3", "How satisfied are you with your academic program overall?", "1|2|3|4|5", "1 — Least · 5 — Most"),
+          L("ciq4", "How manageable does your current workload feel?", "1|2|3|4|5", "1 — Too little · 3 — Just right · 5 — Too Much"),
+          R("ciq5", "Do you need any help or support from your advisor this week?", "yes|no"),
+          R("ciq6", "Are you experiencing any financial stress that's affecting your academics?", "yes|no"),
+          L("ciq7", "How is your job or internship search going at the moment?", "1|2|3|4|5|N/A — I am not job-seeking", "1 — not too well · 5 — Excellent"),
+          T("ciq8", "Is there anything else you'd like to share about how you're doing?", "", 4)
+        ])
+      ]
+    },
     "program-short": {
       code: "S1", title: "Beginning of the Program", version: "Short", time: "5–6 minutes",
       when: "First two weeks of the first semester",
@@ -423,6 +442,8 @@
     if (q.type === "radio" || q.type === "check") {
       const inputType = q.type === "radio" ? "radio" : "checkbox";
       control = `<div class="choice-list">${q.options.map((option, i) => `<label class="choice"><input type="${inputType}" name="${q.id}" value="${esc(option)}" data-question="${q.id}" ${described}><span>${esc(option)}</span></label>`).join("")}</div><p class="validation" id="${q.id}-error" hidden></p>`;
+    } else if (q.type === "scale") {
+      control = `<div class="scale-list" role="radiogroup" aria-label="${esc(q.label)}">${q.options.map(option => `<label class="scale-choice"><input type="radio" name="${q.id}" value="${esc(option)}" data-question="${q.id}" ${described}><span>${esc(option)}</span></label>`).join("")}</div>`;
     } else if (q.type === "matrix") {
       control = `<div class="matrix-wrap"><table><thead><tr><th scope="col">Area</th>${q.columns.map(c => `<th scope="col">${esc(c)}</th>`).join("")}</tr></thead><tbody>${q.rows.map((row, ri) => `<tr><th scope="row">${esc(row)}</th>${q.columns.map(col => `<td><input type="radio" name="${q.id}-${ri}" value="${esc(col)}" data-question="${q.id}" data-row="${esc(row)}" aria-label="${esc(row)}: ${esc(col)}"></td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
     } else {
@@ -432,7 +453,7 @@
       control = tag;
     }
     const follow = q.follow ? `<div class="conditional" data-follow-for="${q.id}" hidden><label class="question-label" for="${q.id}-follow">${esc(q.follow.label)} <span class="optional">(optional)</span></label>${q.follow.type === "textarea" ? `<textarea id="${q.id}-follow" data-question="${q.id}-follow"></textarea>` : `<input type="text" id="${q.id}-follow" data-question="${q.id}-follow">`}</div>` : "";
-    if (["radio", "check", "matrix"].includes(q.type)) return `<fieldset class="question" data-field="${q.id}"><legend>${label}</legend>${hint}${control}${follow}</fieldset>`;
+    if (["radio", "check", "scale", "matrix"].includes(q.type)) return `<fieldset class="question" data-field="${q.id}"><legend>${label}</legend>${hint}${control}${follow}</fieldset>`;
     return `<div class="question" data-field="${q.id}"><label class="question-label" for="${q.id}">${label}</label>${hint}${control}</div>`;
   }
 
@@ -448,7 +469,7 @@
       }).filter(Boolean);
     }
     const controls = [...form.querySelectorAll(`[name="${id}"]`)];
-    if (q.type === "radio") return controls.filter(c => c.checked).map(c => c.value);
+    if (q.type === "radio" || q.type === "scale") return controls.filter(c => c.checked).map(c => c.value);
     if (q.type === "check") return controls.filter(c => c.checked).map(c => c.value);
     const control = form.querySelector(`[name="${id}"]`);
     return control && control.value.trim() ? [control.value.trim()] : [];
@@ -482,8 +503,9 @@
   }
 
   function updateProgress() {
-    const answered = [...fieldIndex.keys()].filter(id => valuesFor(id).length > 0).length;
-    const percent = Math.round((answered / fieldIndex.size) * 100);
+    const trackedIds = [...fieldIndex.keys()].filter(id => !survey.progressRequiredOnly || !fieldIndex.get(id).optional);
+    const answered = trackedIds.filter(id => valuesFor(id).length > 0).length;
+    const percent = Math.round((answered / trackedIds.length) * 100);
     form.querySelector(".progress__bar").style.width = `${percent}%`;
     form.querySelector(".progress").setAttribute("aria-valuenow", String(percent));
     form.querySelector("[data-progress-text]").textContent = `${percent}% answered`;
